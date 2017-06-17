@@ -2,7 +2,7 @@
  *ngIf="lessons; else loadingLessons;">
   <tbody>
     <tr *ngFor="let lesson of lessons"
-    (click)="select(lesson)">
+    >
       <td class="viewed">
         <input type="checkbox" (click)="toggleLessonViewed(lesson)"
         [checked]="lesson.completed">

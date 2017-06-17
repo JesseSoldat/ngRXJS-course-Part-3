@@ -3,7 +3,7 @@ import { testLessons } from './../shared/model/test-lessons';
 import { Component, OnInit } from '@angular/core';
 import { store } from './app-data';
 
-
+ 
 @Component({
   selector: 'event-bus-experiments',
   templateUrl: './event-bus-experiments.component.html',

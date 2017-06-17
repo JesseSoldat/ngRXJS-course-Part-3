@@ -1,27 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import * as _ from 'lodash';
+import {Observer} from 'rxjs';
 import { Lesson } from './../shared/model/lesson';
-import { Observer, store } from './../event-bus-experiments/app-data';
+import { store } from './../event-bus-experiments/app-data';
 
 @Component({
   selector: 'lessons-list',
   templateUrl: './lessons-list.component.html',
   styleUrls: ['./lessons-list.component.css']
 })
-export class LessonsListComponent implements OnInit, Observer {
-  lessons: Lesson[] = [];
+export class LessonsListComponent implements OnInit, Observer<Lesson[]> {
+  lessons: Lesson[] = []; 
 
-  constructor() {
-    console.log('lesson list is registered as a listener ');
-    store.subscribe(this);
-   }
-
-  ngOnInit() {          
+  ngOnInit() {   
+    store.lessonsList$.subscribe(this);          
   }
 
-  next(data: Lesson[]) {
-    console.log('lessons list component received data');
-    this.lessons = data;  
+  //DOES NOT WORK
+  // next(data: Lesson[]) {
+  //   console.log('List',data);  
+  //   this.lessons = data;  
+  // }
+
+  next = (data: Lesson[]) => {
+    console.log('List', data);
+    this.lessons = data; 
+  }
+
+  error(err: any) {
+    console.error(err);  
+  }
+
+  complete() {
   }
 
   toggleLessonViewed(lesson: Lesson) {

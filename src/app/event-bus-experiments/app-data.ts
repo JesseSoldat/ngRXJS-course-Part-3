@@ -1,53 +1,20 @@
-import { Lesson } from './../shared/model/lesson';
 import * as _ from 'lodash';
+import { Subject, Observable, Observer, BehaviorSubject} from 'rxjs';
+import { Lesson } from './../shared/model/lesson';
 
-export const LESSONS_LIST_AVAILABLE = 'NEW_LIST_AVAILABLE';
-export const ADD_NEW_LESSON = 'ADD_NEW_LESSON';
-
-export interface Observer {
-	next(data:any);
-}
-export interface Observable {
-	subscribe(obs:Observer);
-	unsubscribe(obs:Observer);
-}
-interface Subject extends Observer, Observable  { 
-}
-
-class SubjectImplementation implements Subject {
-	private observers: Observer[] = [];
-	
-	next(data: any) {
-		this.observers.forEach(obs => obs.next(data));
-	}
-	subscribe(obs: Observer) {
-		this.observers.push(obs);
-	}
-	unsubscribe(obs: Observer) {
-		_.remove(this.observers, el => el === obs);
-	}
-}
-
-class DataStore implements Observable {
+class DataStore {
 	private lessons: Lesson[] = [];
-	private lessonListSubject = new SubjectImplementation();
 
-	subscribe(obs: Observer) {
-		this.lessonListSubject.subscribe(obs);
-		obs.next(this.lessons);
-	}
-	unsubscribe(obs: Observer) {
-		this.lessonListSubject.unsubscribe(obs)
-	}  
+	private lessonListSubject = new BehaviorSubject([]);
+
+	public lessonsList$: Observable<Lesson[]> = this.lessonListSubject.asObservable(); 
 
 	initializeLessonsList(newList: Lesson[]) {
-	//we dont' want to have ref to avoid this being mutated from outside of the component
 		this.lessons = _.cloneDeep(newList);
 		this.broadcast();
 	}
 
 	addLesson(newLesson: Lesson) {
-		//avoid mutations from outside NO REF
 		this.lessons.push(_.cloneDeep(newLesson));
 		this.broadcast();
 	}	
