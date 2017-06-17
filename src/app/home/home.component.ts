@@ -16,14 +16,14 @@ export class HomeComponent implements OnInit {
   constructor(private db: AngularFireDatabase) { }
 
   ngOnInit() {
-    this.db.list('/ngrx/courses')
+    this.db.list('courses')
       .do(console.log)
       .subscribe(data => this.courses = data);
     
-    this.db.list('/ngrx/lessons', {
+    this.db.list('lessons', {
       query: {
         orderByKey: true,
-        limitToLast: 10
+        limitToFirst: 10
       }
     })
       .do(console.log)
